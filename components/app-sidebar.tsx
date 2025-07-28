@@ -15,6 +15,7 @@ import {
   IconUsers,
   IconUserSearch,
   IconClipboardList,
+  IconMail,
 } from "@tabler/icons-react"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -38,8 +39,13 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: IconDashboard,
+    },
+    {
+      title: "Inbox",
+      url: "/inbox",
+      icon: IconMail,
     },
     {
       title: "Squad Management",

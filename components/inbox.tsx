@@ -2,29 +2,21 @@
 
 import * as React from "react"
 import { 
-  Inbox, 
   Star, 
-  Archive, 
   Trash2, 
   Send, 
-  Users, 
-  Calendar, 
-  Trophy, 
-  Target, 
   PlusCircle,
   Reply,
   Forward,
   Paperclip,
   Search,
-  Bell,
-  Settings
+  Archive
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 
 interface InboxMessage {
@@ -137,21 +129,6 @@ const mockMessages: InboxMessage[] = [
   }
 ]
 
-const sidebarItems = [
-  { icon: Inbox, label: "Inbox", count: 23, active: true },
-  { icon: Star, label: "Starred", count: 8 },
-  { icon: Send, label: "Sent", count: 156 },
-  { icon: Archive, label: "Archive", count: 2847 },
-  { icon: Trash2, label: "Trash", count: 12 }
-]
-
-const categories = [
-  { icon: Users, label: "Team Management", count: 12 },
-  { icon: Trophy, label: "Match Reports", count: 8 },
-  { icon: Target, label: "Scouting", count: 15 },
-  { icon: Calendar, label: "Fixtures", count: 6 }
-]
-
 export function SoccerInbox() {
   const [selectedMessage, setSelectedMessage] = React.useState<InboxMessage | null>(mockMessages[0])
   const [searchQuery, setSearchQuery] = React.useState("")
@@ -163,108 +140,34 @@ export function SoccerInbox() {
   )
 
   return (
-    <div className="flex h-screen bg-background">
-      {/* Sidebar */}
-      <div className="w-64 border-r bg-sidebar/50 flex flex-col">
-        {/* Header */}
-        <div className="p-4 border-b">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <Inbox className="w-4 h-4 text-primary-foreground" />
-            </div>
-            <span className="font-semibold">BoardRoom FC</span>
-          </div>
-          <Button className="w-full" size="sm">
-            <PlusCircle className="w-4 h-4 mr-2" />
-            Compose
-          </Button>
-        </div>
-
-        {/* Search */}
-        <div className="p-4 border-b">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search messages..." 
-              className="pl-9"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </div>
-
-        {/* Main folders */}
-        <div className="flex-1 overflow-auto">
-          <div className="p-2">
-            {sidebarItems.map((item) => (
-              <button
-                key={item.label}
-                className={cn(
-                  "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                  item.active 
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "hover:bg-sidebar-accent/50"
-                )}
-              >
-                <item.icon className="w-4 h-4" />
-                <span className="flex-1 text-left">{item.label}</span>
-                {item.count > 0 && (
-                  <Badge variant="secondary" className="text-xs">
-                    {item.count}
-                  </Badge>
-                )}
-              </button>
-            ))}
-          </div>
-
-          <Separator className="mx-4 my-2" />
-
-          {/* Categories */}
-          <div className="p-2">
-            <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Categories
-            </div>
-            {categories.map((category) => (
-              <button
-                key={category.label}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium hover:bg-sidebar-accent/50 transition-colors"
-              >
-                <category.icon className="w-4 h-4" />
-                <span className="flex-1 text-left">{category.label}</span>
-                {category.count > 0 && (
-                  <Badge variant="outline" className="text-xs">
-                    {category.count}
-                  </Badge>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Settings */}
-        <div className="p-4 border-t">
-          <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium hover:bg-sidebar-accent/50 transition-colors">
-            <Settings className="w-4 h-4" />
-            <span>Settings</span>
-          </button>
-        </div>
-      </div>
-
+    <div className="flex h-full bg-background">
       {/* Message List */}
       <div className="flex-1 flex">
         <div className="w-96 border-r bg-card/50 flex flex-col">
           {/* Header */}
           <div className="p-4 border-b">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold">Inbox</h2>
               <div className="flex items-center gap-2">
-                <Button size="sm" variant="ghost">
-                  <Bell className="w-4 h-4" />
+                <Button size="sm">
+                  <PlusCircle className="w-4 h-4 mr-2" />
+                  Compose
                 </Button>
               </div>
             </div>
-            <div className="text-sm text-muted-foreground">
+            <div className="text-sm text-muted-foreground mb-4">
               {filteredMessages.filter(m => !m.isRead).length} unread messages
+            </div>
+            
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input 
+                placeholder="Search messages..." 
+                className="pl-9"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
           </div>
 
@@ -413,7 +316,9 @@ export function SoccerInbox() {
           ) : (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center text-muted-foreground">
-                <Inbox className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <div className="w-12 h-12 mx-auto mb-4 opacity-50 flex items-center justify-center">
+                  <Send className="w-8 h-8" />
+                </div>
                 <p>Select a message to view</p>
               </div>
             </div>
