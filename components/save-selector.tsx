@@ -1,13 +1,14 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { IconPlus, IconClock, IconTrophy, IconLoader2 } from "@tabler/icons-react"
 import { cn } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { useSaves } from "@/lib/hooks/use-saves"
+import { supabase, SaveMetadata } from "@/lib/supabase"
+import { logger } from "@/lib/logger"
 
 const getTeamLogo = (teamName: string | null | undefined) => {
   if (!teamName) return "/placeholder.svg"
@@ -40,35 +41,105 @@ export function SaveSelector({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { saves, loading, error, updateSaveLastOpened } = useSaves()
+  const [saves, setSaves] = useState<SaveMetadata[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
-  // Debug logging
+  // Enhanced function to get current user and saves with better logging
+  const loadSavesDirectly = async () => {
+    try {
+      logger.info('SaveSelector: Starting to load saves')
+      setLoading(true)
+      setError(null)
+
+      // Get current user directly
+      logger.debug('SaveSelector: Getting current user')
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      
+      if (userError) {
+        logger.auth.failure('get user', userError, { component: 'SaveSelector' })
+        throw userError
+      }
+
+      if (!user) {
+        logger.warn('SaveSelector: No authenticated user found, redirecting to login')
+        router.push('/login')
+        return
+      }
+
+      logger.auth.success('get user', { 
+        userId: user.id,
+        email: user.email,
+        component: 'SaveSelector'
+      })
+
+      // Get saves for this user
+      logger.info('SaveSelector: Fetching saves for user', { userId: user.id })
+      const { data: savesData, error: savesError } = await supabase
+        .from('save_metadata')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('date_last_opened', { ascending: false })
+
+      if (savesError) {
+        logger.db.error('SELECT', 'save_metadata', savesError, { userId: user.id })
+        throw savesError
+      }
+
+      logger.db.success('SELECT', 'save_metadata', { 
+        count: savesData?.length || 0,
+        userId: user.id
+      })
+      
+      setSaves(savesData || [])
+
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load saves'
+      logger.error('SaveSelector: Error loading saves', err)
+      setError(errorMessage)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Load saves on mount
   useEffect(() => {
-    console.log('SaveSelector render:', { 
-      loading, 
-      error,
-      savesCount: saves.length 
-    })
-  }, [loading, error, saves.length])
+    logger.debug('SaveSelector: Component mounted, loading saves')
+    loadSavesDirectly()
+  }, [])
 
   const handleSaveSelect = async (saveId: string) => {
     try {
-      await updateSaveLastOpened(saveId)
+      logger.info('SaveSelector: Updating save last opened', { saveId })
+      
+      const { error } = await supabase
+        .from('save_metadata')
+        .update({ date_last_opened: new Date().toISOString() })
+        .eq('id', saveId)
+
+      if (error) {
+        logger.db.error('UPDATE', 'save_metadata', error, { saveId })
+        // Don't throw here, still navigate even if update fails
+      } else {
+        logger.db.success('UPDATE', 'save_metadata', { saveId })
+      }
+
+      logger.info('SaveSelector: Navigating to dashboard')
       router.push("/dashboard")
     } catch (error) {
-      console.error("Failed to update save:", error)
+      logger.error('SaveSelector: Failed to update save', error, { saveId })
       // Still navigate even if update fails
       router.push("/dashboard")
     }
   }
 
   const handleCreateNew = () => {
+    logger.info('SaveSelector: Creating new save')
     router.push("/create-manager")
   }
 
   if (loading) {
-    console.log('Saves loading...')
     return (
       <div className={cn("flex flex-col gap-6", className)} {...props}>
         <Card className="overflow-hidden">
@@ -84,14 +155,13 @@ export function SaveSelector({
   }
 
   if (error) {
-    console.log('Error loading saves:', error)
     return (
       <div className={cn("flex flex-col gap-6", className)} {...props}>
         <Card className="overflow-hidden">
           <CardContent className="p-6 md:p-8">
             <div className="flex flex-col items-center justify-center gap-4 min-h-[200px]">
               <p className="text-destructive">Error loading saves: {error}</p>
-              <Button onClick={() => window.location.reload()}>
+              <Button onClick={loadSavesDirectly}>
                 Retry
               </Button>
             </div>
@@ -100,8 +170,6 @@ export function SaveSelector({
       </div>
     )
   }
-
-  console.log('Rendering saves list with', saves.length, 'saves')
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

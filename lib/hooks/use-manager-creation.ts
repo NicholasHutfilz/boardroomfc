@@ -1,127 +1,117 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase, TempManagerInfo } from '../supabase'
-import { useAuth } from '../auth-context'
-import { useSaves } from './use-saves'
+import { supabase } from '@/lib/supabase'
+import { logger } from '@/lib/logger'
+import { useAuth } from '@/lib/auth-context'
 
 export interface ManagerFormData {
   firstName: string
   lastName: string
-  nationality: string
-  birthPlace: string
-  dateOfBirth: string
-  favoriteTeam: string
-  selectedClub: string | null
-  isUnemployed: boolean
-  coachingLicense: string
-  playingExperience: string
+  nationality?: string
+  birthPlace?: string
+  dateOfBirth?: string
+  favoriteTeam?: string
+  selectedClub?: string | null
+  isUnemployed?: boolean
+  coachingLicense?: string
+  playingExperience?: string
 }
 
 export function useManagerCreation() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const { user } = useAuth()
-  const { createSave } = useSaves()
   const router = useRouter()
+  const { user } = useAuth()
 
-  const createManagerAndSave = async (formData: ManagerFormData) => {
+  const createManagerAndSave = async (managerData: ManagerFormData) => {
     if (!user) {
-      throw new Error('User not authenticated')
+      logger.auth.failure('create manager', new Error('No authenticated user'))
+      setError('You must be logged in to create a manager')
+      return
     }
 
-    setLoading(true)
-    setError(null)
-
     try {
-      // First create the save metadata
-      const saveData = await createSave({
-        name: `${formData.firstName} ${formData.lastName} - ${formData.selectedClub || 'Unemployed'}`,
-        manager_name: `${formData.firstName} ${formData.lastName}`,
-        most_recent_team: formData.isUnemployed ? undefined : formData.selectedClub || undefined,
-        most_recent_place: formData.isUnemployed ? undefined : 'Preseason',
-        most_recent_season: new Date().getFullYear() + '/' + (new Date().getFullYear() + 1).toString().slice(-2),
+      logger.info('Creating manager and save', { 
+        managerName: `${managerData.firstName} ${managerData.lastName}`,
+        userId: user.id 
       })
+      setLoading(true)
+      setError(null)
 
-      if (!saveData) {
-        throw new Error('Failed to create save')
+      // Create save metadata first
+      const saveMetadata = {
+        user_id: user.id,
+        name: `${managerData.firstName} ${managerData.lastName}`,
+        manager_name: `${managerData.firstName} ${managerData.lastName}`,
+        date_created: new Date().toISOString(),
+        date_last_opened: new Date().toISOString(),
+        most_recent_team: managerData.isUnemployed ? null : managerData.selectedClub,
+        most_recent_place: null,
+        most_recent_season: '2024/25'
       }
 
-      // Then create the temporary manager info
+      logger.db.query('INSERT', 'save_metadata', { userId: user.id })
+      const { data: saveData, error: saveError } = await supabase
+        .from('save_metadata')
+        .insert(saveMetadata)
+        .select()
+        .single()
+
+      if (saveError) {
+        logger.db.error('INSERT', 'save_metadata', saveError, { userId: user.id })
+        throw saveError
+      }
+
+      logger.db.success('INSERT', 'save_metadata', { 
+        saveId: saveData.id,
+        userId: user.id 
+      })
+
+      // Create temporary manager info
+      const tempManagerInfo = {
+        save_id: saveData.id,
+        first_name: managerData.firstName,
+        last_name: managerData.lastName,
+        nationality: managerData.nationality || '',
+        birth_place: managerData.birthPlace || '',
+        date_of_birth: managerData.dateOfBirth || null,
+        favorite_team: managerData.favoriteTeam || '',
+        selected_club: managerData.selectedClub || null,
+        coaching_license: managerData.coachingLicense || 'None',
+        playing_experience: managerData.playingExperience || 'Amateur'
+      }
+
+      logger.db.query('INSERT', 'temp_manager_info', { saveId: saveData.id })
       const { error: managerError } = await supabase
         .from('temp_manager_info')
-        .insert({
-          save_id: saveData.id,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          nationality: formData.nationality,
-          birth_place: formData.birthPlace,
-          date_of_birth: formData.dateOfBirth || null,
-          favorite_team: formData.favoriteTeam,
-          selected_club: formData.selectedClub,
-          coaching_license: formData.coachingLicense,
-          playing_experience: formData.playingExperience,
-        })
+        .insert(tempManagerInfo)
 
       if (managerError) {
+        logger.db.error('INSERT', 'temp_manager_info', managerError, { saveId: saveData.id })
         throw managerError
       }
 
-      // Navigate to dashboard on success
+      logger.db.success('INSERT', 'temp_manager_info', { saveId: saveData.id })
+      logger.info('Manager and save created successfully', { 
+        saveId: saveData.id,
+        managerName: `${managerData.firstName} ${managerData.lastName}`
+      })
+
+      // Navigate to dashboard
       router.push('/dashboard')
-      
-      return saveData
+
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create manager'
+      logger.error('Failed to create manager and save', err, { userId: user.id })
       setError(errorMessage)
-      throw err
     } finally {
       setLoading(false)
-    }
-  }
-
-  const getManagerInfo = async (saveId: string): Promise<TempManagerInfo | null> => {
-    try {
-      const { data, error } = await supabase
-        .from('temp_manager_info')
-        .select('*')
-        .eq('save_id', saveId)
-        .single()
-
-      if (error && error.code !== 'PGRST116') {
-        throw error
-      }
-
-      return data
-    } catch (err) {
-      console.error('Error fetching manager info:', err)
-      return null
-    }
-  }
-
-  const updateManagerInfo = async (saveId: string, updates: Partial<TempManagerInfo>) => {
-    try {
-      const { error } = await supabase
-        .from('temp_manager_info')
-        .update({
-          ...updates,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('save_id', saveId)
-
-      if (error) {
-        throw error
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update manager info')
-      throw err
     }
   }
 
   return {
     loading,
     error,
-    createManagerAndSave,
-    getManagerInfo,
-    updateManagerInfo,
+    createManagerAndSave
   }
 } 
