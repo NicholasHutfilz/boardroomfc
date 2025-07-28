@@ -1,47 +1,107 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { IconPlus, IconClock, IconTrophy } from "@tabler/icons-react"
+import { IconPlus, IconClock, IconTrophy, IconLoader2 } from "@tabler/icons-react"
 import { cn } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { useSaves } from "@/lib/hooks/use-saves"
 
-const mockSaves = [
-  {
-    id: "chelsea-save",
-    managerName: "Alex Ferguson",
-    teamName: "Chelsea",
-    logo: "/Chelsea_FC.png",
-    lastPlayed: "2 hours ago",
-    season: "2024/25",
-    league: "Premier League",
-    position: "3rd"
-  },
-  {
-    id: "arsenal-save", 
-    managerName: "Pep Guardiola",
-    teamName: "Arsenal",
-    logo: "/Arsenal_FC.png", 
-    lastPlayed: "3 days ago",
-    season: "2024/25",
-    league: "Premier League",
-    position: "1st"
+const getTeamLogo = (teamName: string | null | undefined) => {
+  if (!teamName) return "/placeholder.svg"
+  
+  const teamLogos: Record<string, string> = {
+    "Chelsea": "/Chelsea_FC.png",
+    "Arsenal": "/Arsenal_FC.png",
   }
-]
+  
+  return teamLogos[teamName] || "/placeholder.svg"
+}
+
+const formatTimeAgo = (dateString: string) => {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60))
+  
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes} minutes ago`
+  } else if (diffInMinutes < 1440) {
+    const hours = Math.floor(diffInMinutes / 60)
+    return `${hours} hour${hours !== 1 ? 's' : ''} ago`
+  } else {
+    const days = Math.floor(diffInMinutes / 1440)
+    return `${days} day${days !== 1 ? 's' : ''} ago`
+  }
+}
 
 export function SaveSelector({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const handleSaveSelect = (saveId: string) => {
-    // Handle save selection logic here
-    console.log('Selected save:', saveId)
+  const { saves, loading, error, updateSaveLastOpened } = useSaves()
+  const router = useRouter()
+
+  // Debug logging
+  useEffect(() => {
+    console.log('SaveSelector render:', { 
+      loading, 
+      error,
+      savesCount: saves.length 
+    })
+  }, [loading, error, saves.length])
+
+  const handleSaveSelect = async (saveId: string) => {
+    try {
+      await updateSaveLastOpened(saveId)
+      router.push("/dashboard")
+    } catch (error) {
+      console.error("Failed to update save:", error)
+      // Still navigate even if update fails
+      router.push("/dashboard")
+    }
   }
 
   const handleCreateNew = () => {
-    // Handle create new save logic here
-    console.log('Create new save')
+    router.push("/create-manager")
   }
+
+  if (loading) {
+    console.log('Saves loading...')
+    return (
+      <div className={cn("flex flex-col gap-6", className)} {...props}>
+        <Card className="overflow-hidden">
+          <CardContent className="p-6 md:p-8">
+            <div className="flex flex-col items-center justify-center gap-4 min-h-[200px]">
+              <IconLoader2 className="size-8 animate-spin text-muted-foreground" />
+              <p className="text-muted-foreground">Loading your saves...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  if (error) {
+    console.log('Error loading saves:', error)
+    return (
+      <div className={cn("flex flex-col gap-6", className)} {...props}>
+        <Card className="overflow-hidden">
+          <CardContent className="p-6 md:p-8">
+            <div className="flex flex-col items-center justify-center gap-4 min-h-[200px]">
+              <p className="text-destructive">Error loading saves: {error}</p>
+              <Button onClick={() => window.location.reload()}>
+                Retry
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  console.log('Rendering saves list with', saves.length, 'saves')
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -51,12 +111,15 @@ export function SaveSelector({
             <div className="flex flex-col items-center text-center">
               <h1 className="text-2xl font-bold">Welcome to Boardroom FC</h1>
               <p className="text-muted-foreground text-balance">
-                Select a save file to continue or create a new one
+                {saves.length > 0 
+                  ? "Select a save file to continue or create a new one"
+                  : "Create your first save file to get started"
+                }
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {mockSaves.map((save) => (
+              {saves.map((save) => (
                 <Card 
                   key={save.id}
                   className="cursor-pointer transition-all hover:shadow-md hover:scale-105"
@@ -66,8 +129,8 @@ export function SaveSelector({
                     <div className="flex flex-col items-center gap-3 text-center">
                       <div className="flex-shrink-0">
                         <Image
-                          src={save.logo}
-                          alt={save.teamName}
+                          src={getTeamLogo(save.most_recent_team)}
+                          alt={save.most_recent_team || "Team"}
                           width={64}
                           height={64}
                           className="rounded-lg"
@@ -75,19 +138,25 @@ export function SaveSelector({
                       </div>
                       <div className="space-y-2">
                         <div className="space-y-1">
-                          <h3 className="font-bold text-lg">{save.managerName}</h3>
-                          <p className="font-semibold text-base text-muted-foreground">{save.teamName}</p>
+                          <h3 className="font-bold text-lg">{save.manager_name}</h3>
+                          <p className="font-semibold text-base text-muted-foreground">
+                            {save.most_recent_team || "No Team"}
+                          </p>
                         </div>
                         <div className="space-y-1 text-sm text-muted-foreground">
                           <div className="flex items-center justify-center gap-1">
                             <IconClock className="size-4" />
-                            {save.lastPlayed}
+                            {formatTimeAgo(save.date_last_opened)}
                           </div>
-                          <div className="flex items-center justify-center gap-1">
-                            <IconTrophy className="size-4" />
-                            {save.position} in {save.league}
-                          </div>
-                          <p>Season {save.season}</p>
+                          {save.most_recent_place && (
+                            <div className="flex items-center justify-center gap-1">
+                              <IconTrophy className="size-4" />
+                              {save.most_recent_place}
+                            </div>
+                          )}
+                          {save.most_recent_season && (
+                            <p>Season {save.most_recent_season}</p>
+                          )}
                         </div>
                       </div>
                     </div>

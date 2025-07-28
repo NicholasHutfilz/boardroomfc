@@ -2,12 +2,13 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { IconCheck, IconClock, IconTrophy, IconUser, IconBuilding, IconEye, IconBriefcase, IconRocket } from "@tabler/icons-react"
+import { IconCheck, IconClock, IconTrophy, IconUser, IconBuilding, IconEye, IconBriefcase, IconRocket, IconLoader2 } from "@tabler/icons-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useManagerCreation, ManagerFormData } from "@/lib/hooks/use-manager-creation"
 
 const steps = [
   { id: 1, name: "Details", icon: IconUser },
@@ -69,6 +70,7 @@ export function ManagerCreation({
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedClub, setSelectedClub] = useState<string | null>(null)
   const [isUnemployed, setIsUnemployed] = useState(false)
+  const { loading, error, createManagerAndSave } = useManagerCreation()
   
   const [formData, setFormData] = useState({
     firstName: "",
@@ -76,7 +78,9 @@ export function ManagerCreation({
     nationality: "",
     birthPlace: "",
     dateOfBirth: "",
-    favoriteTeam: ""
+    favoriteTeam: "",
+    coachingLicense: "None",
+    playingExperience: "Amateur"
   })
 
   const handleNext = () => {
@@ -91,6 +95,42 @@ export function ManagerCreation({
     }
   }
 
+  const handleFinish = async () => {
+    try {
+      const managerData: ManagerFormData = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        nationality: formData.nationality,
+        birthPlace: formData.birthPlace,
+        dateOfBirth: formData.dateOfBirth,
+        favoriteTeam: formData.favoriteTeam,
+        selectedClub: selectedClub,
+        isUnemployed: isUnemployed,
+        coachingLicense: formData.coachingLicense,
+        playingExperience: formData.playingExperience,
+      }
+
+      await createManagerAndSave(managerData)
+    } catch (err) {
+      console.error('Failed to create manager:', err)
+    }
+  }
+
+  const canProceed = () => {
+    switch (currentStep) {
+      case 1:
+        return formData.firstName.trim() && formData.lastName.trim()
+      case 2:
+        return selectedClub || isUnemployed
+      case 3:
+        return true // Appearance step is optional for now
+      case 4:
+        return true // Experience fields have defaults
+      default:
+        return true
+    }
+  }
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
@@ -98,21 +138,23 @@ export function ManagerCreation({
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="firstName">First Name</Label>
+                <Label htmlFor="firstName">First Name *</Label>
                 <Input
                   id="firstName"
                   value={formData.firstName}
                   onChange={(e) => setFormData({...formData, firstName: e.target.value})}
                   placeholder="Alex"
+                  required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="lastName">Last Name</Label>
+                <Label htmlFor="lastName">Last Name *</Label>
                 <Input
                   id="lastName"
                   value={formData.lastName}
                   onChange={(e) => setFormData({...formData, lastName: e.target.value})}
                   placeholder="Ferguson"
+                  required
                 />
               </div>
             </div>
@@ -158,77 +200,61 @@ export function ManagerCreation({
       case 2:
         return (
           <div className="space-y-6">
-            <div className="flex gap-4 text-sm">
-              <select className="px-3 py-2 border rounded-md">
-                <option>All Countries</option>
-                <option>England</option>
-                <option>Spain</option>
-                <option>Germany</option>
-              </select>
-              <select className="px-3 py-2 border rounded-md">
-                <option>All Leagues</option>
-                <option>Premier League</option>
-                <option>La Liga</option>
-                <option>Bundesliga</option>
-              </select>
+            <div className="text-center">
+              <h3 className="text-xl font-semibold mb-2">Choose Your Starting Club</h3>
+              <p className="text-muted-foreground">Select a club to manage or start as unemployed</p>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {clubs.map((club) => (
                 <Card 
                   key={club.id}
                   className={cn(
-                    "cursor-pointer transition-all hover:shadow-md hover:scale-105",
-                    selectedClub === club.id && !isUnemployed && "ring-2 ring-primary ring-offset-2"
+                    "cursor-pointer transition-all hover:shadow-md",
+                    selectedClub === club.id && !isUnemployed ? "ring-2 ring-primary" : ""
                   )}
                   onClick={() => {
                     setSelectedClub(club.id)
                     setIsUnemployed(false)
                   }}
                 >
-                  <CardContent className="p-4">
-                    <div className="flex flex-col items-center gap-3 text-center">
-                      <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
-                        {club.logo.includes('placeholder') ? (
-                          <IconBuilding className="size-6 text-muted-foreground" />
-                        ) : (
-                          <Image
-                            src={club.logo}
-                            alt={club.name}
-                            width={32}
-                            height={32}
-                            className="rounded"
-                          />
-                        )}
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-sm">{club.name}</h4>
-                        <p className="text-xs text-muted-foreground">{club.league}</p>
-                      </div>
-                    </div>
+                  <CardContent className="p-4 text-center">
+                    <Image
+                      src={club.logo}
+                      alt={club.name}
+                      width={64}
+                      height={64}
+                      className="mx-auto mb-3 rounded-lg"
+                    />
+                    <h4 className="font-semibold">{club.name}</h4>
+                    <p className="text-sm text-muted-foreground">{club.league}</p>
+                    <p className="text-xs text-muted-foreground">{club.country}</p>
                   </CardContent>
                 </Card>
               ))}
             </div>
             
-            <Card 
-              className={cn(
-                "cursor-pointer transition-all hover:shadow-md hover:scale-105 border-dashed",
-                isUnemployed && "ring-2 ring-primary ring-offset-2"
-              )}
-              onClick={() => {
-                setIsUnemployed(true)
-                setSelectedClub(null)
-              }}
-            >
-              <CardContent className="p-6">
-                <div className="flex flex-col items-center gap-2 text-center">
-                  <IconUser className="size-8 text-muted-foreground" />
-                  <h4 className="font-semibold">Start Unemployed</h4>
-                  <p className="text-sm text-muted-foreground">Begin your career without a club</p>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="text-center">
+              <Card 
+                className={cn(
+                  "cursor-pointer transition-all hover:shadow-md border-dashed",
+                  isUnemployed ? "ring-2 ring-primary" : ""
+                )}
+                onClick={() => {
+                  setIsUnemployed(true)
+                  setSelectedClub(null)
+                }}
+              >
+                <CardContent className="p-6">
+                  <div className="space-y-2">
+                    <h4 className="font-semibold">Start Unemployed</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Begin your career without a club and search for opportunities
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         )
       
@@ -246,22 +272,32 @@ export function ManagerCreation({
           <div className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label>Coaching License</Label>
-                <select className="w-full px-3 py-2 border rounded-md">
-                  <option>None</option>
-                  <option>UEFA C License</option>
-                  <option>UEFA B License</option>
-                  <option>UEFA A License</option>
-                  <option>UEFA Pro License</option>
+                <Label htmlFor="coachingLicense">Coaching License</Label>
+                <select 
+                  id="coachingLicense"
+                  className="w-full px-3 py-2 border rounded-md bg-background"
+                  value={formData.coachingLicense}
+                  onChange={(e) => setFormData({...formData, coachingLicense: e.target.value})}
+                >
+                  <option value="None">None</option>
+                  <option value="UEFA C License">UEFA C License</option>
+                  <option value="UEFA B License">UEFA B License</option>
+                  <option value="UEFA A License">UEFA A License</option>
+                  <option value="UEFA Pro License">UEFA Pro License</option>
                 </select>
               </div>
               <div className="space-y-2">
-                <Label>Playing Experience</Label>
-                <select className="w-full px-3 py-2 border rounded-md">
-                  <option>Amateur</option>
-                  <option>Semi-Professional</option>
-                  <option>Professional</option>
-                  <option>International</option>
+                <Label htmlFor="playingExperience">Playing Experience</Label>
+                <select 
+                  id="playingExperience"
+                  className="w-full px-3 py-2 border rounded-md bg-background"
+                  value={formData.playingExperience}
+                  onChange={(e) => setFormData({...formData, playingExperience: e.target.value})}
+                >
+                  <option value="Amateur">Amateur</option>
+                  <option value="Semi-Professional">Semi-Professional</option>
+                  <option value="Professional">Professional</option>
+                  <option value="International">International</option>
                 </select>
               </div>
             </div>
@@ -280,8 +316,27 @@ export function ManagerCreation({
               Your manager {formData.firstName} {formData.lastName} is ready to start their career
               {selectedClub ? ` at ${clubs.find(c => c.id === selectedClub)?.name}` : isUnemployed ? ' as an unemployed manager' : ''}.
             </p>
-            <Button size="lg" className="w-full">
-              Take Me to the Dashboard
+            
+            {error && (
+              <div className="bg-destructive/10 text-destructive border border-destructive/20 rounded-lg p-3 text-sm mb-4">
+                {error}
+              </div>
+            )}
+            
+            <Button 
+              size="lg" 
+              className="w-full" 
+              onClick={handleFinish}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <IconLoader2 className="size-4 mr-2 animate-spin" />
+                  Creating Manager...
+                </>
+              ) : (
+                "Take Me to the Dashboard"
+              )}
             </Button>
           </div>
         )
@@ -343,11 +398,14 @@ export function ManagerCreation({
                 <Button 
                   variant="outline" 
                   onClick={handleBack}
-                  disabled={currentStep === 1}
+                  disabled={currentStep === 1 || loading}
                 >
                   Back
                 </Button>
-                <Button onClick={handleNext}>
+                <Button 
+                  onClick={handleNext}
+                  disabled={!canProceed() || loading}
+                >
                   {currentStep === 4 ? "Finish" : "Next"}
                 </Button>
               </div>
