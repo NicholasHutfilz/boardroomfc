@@ -44,7 +44,7 @@ const data = {
     },
     {
       title: "Squad Management",
-      url: "#",
+      url: "/squad",
       icon: IconUsers,
     },
     {
