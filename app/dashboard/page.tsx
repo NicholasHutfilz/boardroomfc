@@ -3,6 +3,7 @@ import { ChartAreaInteractive } from "@/components/chart-area-interactive"
 import { DataTable } from "@/components/data-table"
 import { SectionCards } from "@/components/section-cards"
 import { SiteHeader } from "@/components/site-header"
+import { SoccerInbox } from "@/components/inbox"
 import {
   SidebarInset,
   SidebarProvider,
@@ -26,6 +27,18 @@ export default function Page() {
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+              {/* Inbox Section */}
+              <div className="px-4 lg:px-6">
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold tracking-tight mb-2">Inbox</h2>
+                  <p className="text-muted-foreground">Your team communications and reports</p>
+                </div>
+                <div className="h-[800px] rounded-lg border overflow-hidden">
+                  <SoccerInbox />
+                </div>
+              </div>
+              
+              {/* Original Dashboard Content */}
               <SectionCards />
               <div className="px-4 lg:px-6">
                 <ChartAreaInteractive />
