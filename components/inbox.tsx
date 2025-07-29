@@ -45,87 +45,46 @@ interface InboxMessage {
 const mockMessages: InboxMessage[] = [
   {
     id: "1",
-    from: "Manager Analytics",
-    fromEmail: "analytics@boardroomfc.com",
-    avatar: "/placeholder.svg",
-    subject: "Transfer window review - January targets",
-    preview: "Latest scouting reports for January transfer window. Key targets identified in midfield and defense positions.",
-    content: "Our scouting team has compiled comprehensive reports on potential January signings. The analysis shows strong candidates for our midfield reinforcement needs.",
-    timestamp: "Jan 15",
+    from: "Phil Murphy",
+    fromEmail: "p.murphy@boardroomfc.com",
+    avatar: "/people/philmurphy.png",
+    subject: "Brighton AI Tactical Shift - Mid-Season Analysis",
+    preview: "Brighton's AI management system has autonomously changed formation to 3-4-3 due to fixture congestion and declining player morale. Fascinating case study of adaptive intelligence.",
+    content: "Boss,\n\nYou need to see this - Brighton's AI management system just made an autonomous tactical shift that's caught everyone off guard. Their algorithm detected a 15% drop in squad morale over the past month (due to their Europa League fixtures piling up) and automatically switched from their trademark 4-2-3-1 to a more defensive 3-4-3.\n\nWhat's remarkable is that their AI didn't just look at fitness data - it actually analyzed player interviews, social media sentiment, and even training ground body language through their video analysis system. The AI concluded that the players were mentally fatigued from constant high-press tactics and needed a system that would allow them to 'breathe' more in games.\n\nThey've won 3 out of 4 since the switch. The AI is learning and adapting in real-time. This is exactly the kind of intelligence we're seeing across football now - systems that think beyond just numbers.\n\nThought you'd find this as fascinating as I do. The future is here.\n\nCheers,\nPhil\n\nP.S. - Their AI also automatically adjusted training intensity and even changed the pre-match meal timing. Incredible stuff.",
+    timestamp: "2 hours ago",
     isRead: false,
     isStarred: true,
     hasAttachments: true,
     attachments: [
-      { name: "transfer_targets.pdf", size: "2.1 MB", type: "pdf" },
-      { name: "budget_analysis.xlsx", size: "891 KB", type: "excel" }
-    ],
-    participants: [
-      { name: "All", avatar: "/placeholder.svg" },
-      { name: "Alex", avatar: "/placeholder.svg" },
-      { name: "Sarah", avatar: "/placeholder.svg" }
+      { name: "brighton_ai_analysis.pdf", size: "2.8 MB", type: "pdf" },
+      { name: "tactical_evolution_video.mp4", size: "45 MB", type: "video" }
     ]
   },
   {
     id: "2",
-    from: "Team Performance",
-    fromEmail: "performance@boardroomfc.com", 
-    avatar: "/placeholder.svg",
-    subject: "Weekly training data - Player fitness metrics",
-    preview: "Comprehensive fitness analysis from last week's training sessions. Notable improvements in stamina and speed metrics.",
-    content: "This week's training data shows significant improvements across the squad. Particularly impressive gains in cardiovascular fitness and sprint speeds.",
-    timestamp: "Jan 14",
+    from: "Marcus Rodriguez",
+    fromEmail: "m.rodriguez@agent.com",
+    avatar: "/people/playerrejectstransfer.png",
+    subject: "RE: Al-Hilal Transfer Offer - Decision Made",
+    preview: "Thank you for the opportunity, but I must decline the offer from Al-Hilal. While the financial package is extraordinary, it doesn't align with my personal values and career aspirations.",
+    content: "Dear Chelsea Football Club,\n\nI hope this message finds you well. I wanted to personally reach out regarding the transfer offer from Al-Hilal that was forwarded to me yesterday.\n\nAfter careful consideration with my family and advisors, I have decided to respectfully decline their offer. While I understand the financial package of £350,000 per week is substantial, there are factors beyond money that guide my decisions.\n\nMy personal values center around playing at the highest competitive level in Europe, where I can continue to grow as a player and compete for major trophies like the Champions League and Premier League. The Saudi Pro League, while growing, doesn't currently offer the same competitive environment that drives me as a footballer.\n\nAdditionally, my family has strong ties to European culture and education systems. Moving to Saudi Arabia, despite the generous offer, would require compromises on lifestyle and values that we're not prepared to make.\n\nI remain committed to Chelsea and excited about our project. Sometimes the right decision isn't the most lucrative one.\n\nThank you for understanding.\n\nBest regards,\nMarcus Rodriguez\n\n\"Football isn't just about money - it's about legacy, competition, and staying true to who you are.\"",
+    timestamp: "Yesterday",
     isRead: true,
     isStarred: false,
-    hasAttachments: true,
-    attachments: [
-      { name: "fitness_report.pdf", size: "1.5 MB", type: "pdf" }
-    ]
-  },
-  {
-    id: "3",
-    from: "Match Analysis",
-    fromEmail: "analysis@boardroomfc.com",
-    avatar: "/placeholder.svg", 
-    subject: "Post-match report: vs Manchester City",
-    preview: "Detailed tactical analysis of yesterday's match. Key areas for improvement identified in defensive transitions.",
-    content: "Yesterday's match provided valuable insights into our tactical setup. While we showed improvement in possession play, defensive transitions need attention.",
-    timestamp: "Jan 13",
-    isRead: true,
-    isStarred: true,
     hasAttachments: false
   },
   {
-    id: "4",
-    from: "Youth Academy",
-    fromEmail: "academy@boardroomfc.com",
-    avatar: "/placeholder.svg",
-    subject: "Promotion candidates - U21 to first team",
-    preview: "Three academy players showing exceptional development. Recommendation for first team integration.",
-    content: "Our youth development program has produced three standout performers ready for first team consideration. Detailed assessment reports attached.",
-    timestamp: "Jan 12", 
+    id: "3",
+    from: "Kai Sterling",
+    fromEmail: "k.sterling@chelseafc.com",
+    avatar: "/people/starplayer.png",
+    subject: "Leeds United Offer - My Decision to Stay",
+    preview: "Boss, got that crazy offer from Leeds but there's no way I'm leaving this project. You're building something special here and I want to be part of Chelsea's renaissance!",
+    content: "Boss!\n\nHad to write this myself because my agent thinks I've lost my mind! 😂\n\nSo Leeds came in with an absolutely mental offer - £400k a week, captaincy, and they're apparently a 'bigger club' (their words, not mine). My agent nearly fainted when I said no.\n\nBut here's the thing - money isn't everything. When I joined Chelsea, you told me we were going to rebuild this club from the ground up and challenge for everything. Two years later, look where we are! From mid-table to Champions League football, and I've been part of that journey.\n\nLeeds might have history, but WE are making history right now. Plus, and I hope this doesn't sound too cheesy, but you're genuinely the best manager I've worked with. The way you've developed my game, trusted me with responsibility, and created this family atmosphere - that's worth more than any pay rise.\n\nThe lads were joking that Leeds must be desperate to offer that much to steal me from the 'little club' Chelsea. Little do they know we're about to show everyone what this 'little club' can do! \n\nI'm all in, boss. Let's bring some silverware home to Stamford Bridge!\n\nKTBFFH! 💙\nKai\n\nP.S. - The agent is still sulking. Might need to buy him a drink! 🍺",
+    timestamp: "3 days ago",
     isRead: false,
-    isStarred: false,
-    hasAttachments: true,
-    attachments: [
-      { name: "academy_report.pdf", size: "3.2 MB", type: "pdf" },
-      { name: "player_videos.zip", size: "125 MB", type: "zip" }
-    ]
-  },
-  {
-    id: "5",
-    from: "Financial Controller",
-    fromEmail: "finance@boardroomfc.com",
-    avatar: "/placeholder.svg",
-    subject: "Q1 Budget review - Transfer funds allocation",
-    preview: "Quarterly financial review complete. Transfer budget confirmed for remaining season activities.",
-    content: "Financial review shows healthy position for January activities. Full budget breakdown and recommendations provided.",
-    timestamp: "Jan 11",
-    isRead: true,
-    isStarred: false,
-    hasAttachments: true,
-    attachments: [
-      { name: "q1_budget.pdf", size: "1.8 MB", type: "pdf" }
-    ]
+    isStarred: true,
+    hasAttachments: false
   }
 ]
 
