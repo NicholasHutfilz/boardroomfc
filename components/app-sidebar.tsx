@@ -65,7 +65,7 @@ const data = {
     },
     {
       title: "Coaching Staff",
-      url: "#",
+      url: "/coaching-staff",
       icon: IconUserSearch,
     },
   ],
