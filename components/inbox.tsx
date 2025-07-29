@@ -48,15 +48,15 @@ const mockMessages: InboxMessage[] = [
     from: "Phil Murphy",
     fromEmail: "p.murphy@boardroomfc.com",
     avatar: "/people/philmurphy.png",
-    subject: "Brighton AI Tactical Shift - Mid-Season Analysis",
-    preview: "Brighton's AI management system has autonomously changed formation to 3-4-3 due to fixture congestion and declining player morale. Fascinating case study of adaptive intelligence.",
-    content: "Boss,\n\nYou need to see this - Brighton's AI management system just made an autonomous tactical shift that's caught everyone off guard. Their algorithm detected a 15% drop in squad morale over the past month (due to their Europa League fixtures piling up) and automatically switched from their trademark 4-2-3-1 to a more defensive 3-4-3.\n\nWhat's remarkable is that their AI didn't just look at fitness data - it actually analyzed player interviews, social media sentiment, and even training ground body language through their video analysis system. The AI concluded that the players were mentally fatigued from constant high-press tactics and needed a system that would allow them to 'breathe' more in games.\n\nThey've won 3 out of 4 since the switch. The AI is learning and adapting in real-time. This is exactly the kind of intelligence we're seeing across football now - systems that think beyond just numbers.\n\nThought you'd find this as fascinating as I do. The future is here.\n\nCheers,\nPhil\n\nP.S. - Their AI also automatically adjusted training intensity and even changed the pre-match meal timing. Incredible stuff.",
+    subject: "Brighton Tactical Shift - Mid-Season Analysis",
+    preview: "Brighton's manager has switched to a 3-4-3 formation mid-season, responding to injuries and a dip in squad morale.",
+    content: "Boss,\n\nBrighton's manager just pulled off a bold tactical shift mid-season. With a string of injuries piling up and squad morale dropping, he abandoned their usual 4-2-3-1 and switched to a 3-4-3.\n\nApparently, the decision came after a tough run of fixtures and some key players voicing concerns about fatigue. The new system gives them more flexibility at the back and lets their wing-backs push higher up the pitch.\n\nSince the change, they've won 3 out of 4 and look revitalized. Shows how much impact a manager can have when reading the room and adapting.\n\nCheers,\nPhil",
     timestamp: "2 hours ago",
     isRead: false,
     isStarred: true,
     hasAttachments: true,
     attachments: [
-      { name: "brighton_ai_analysis.pdf", size: "2.8 MB", type: "pdf" },
+      { name: "brighton_tactical_shift.pdf", size: "2.8 MB", type: "pdf" },
       { name: "tactical_evolution_video.mp4", size: "45 MB", type: "video" }
     ]
   },
@@ -66,10 +66,10 @@ const mockMessages: InboxMessage[] = [
     fromEmail: "m.rodriguez@agent.com",
     avatar: "/people/playerrejectstransfer.png",
     subject: "RE: Al-Hilal Transfer Offer - Decision Made",
-    preview: "Thank you for the opportunity, but I must decline the offer from Al-Hilal. While the financial package is extraordinary, it doesn't align with my personal values and career aspirations.",
-    content: "Dear Chelsea Football Club,\n\nI hope this message finds you well. I wanted to personally reach out regarding the transfer offer from Al-Hilal that was forwarded to me yesterday.\n\nAfter careful consideration with my family and advisors, I have decided to respectfully decline their offer. While I understand the financial package of £350,000 per week is substantial, there are factors beyond money that guide my decisions.\n\nMy personal values center around playing at the highest competitive level in Europe, where I can continue to grow as a player and compete for major trophies like the Champions League and Premier League. The Saudi Pro League, while growing, doesn't currently offer the same competitive environment that drives me as a footballer.\n\nAdditionally, my family has strong ties to European culture and education systems. Moving to Saudi Arabia, despite the generous offer, would require compromises on lifestyle and values that we're not prepared to make.\n\nI remain committed to Chelsea and excited about our project. Sometimes the right decision isn't the most lucrative one.\n\nThank you for understanding.\n\nBest regards,\nMarcus Rodriguez\n\n\"Football isn't just about money - it's about legacy, competition, and staying true to who you are.\"",
+    preview: "Thanks for the opportunity, but I'm declining Al-Hilal. The money's great but doesn't align with my career goals.",
+    content: "Hey boss,\n\nDecided to turn down that Al-Hilal offer. £350k/week is crazy money but I want to stay in Europe and compete at the highest level.\n\nFamily's settled here and I'm not ready to give up on the Champions League dream. Plus, we've got something special building at Chelsea.\n\nSometimes it's not about the money.\n\nBest,\nMarcus",
     timestamp: "Yesterday",
-    isRead: true,
+    isRead: false,
     isStarred: false,
     hasAttachments: false
   },
@@ -78,11 +78,11 @@ const mockMessages: InboxMessage[] = [
     from: "Kai Sterling",
     fromEmail: "k.sterling@chelseafc.com",
     avatar: "/people/starplayer.png",
-    subject: "Leeds United Offer - My Decision to Stay",
-    preview: "Boss, got that crazy offer from Leeds but there's no way I'm leaving this project. You're building something special here and I want to be part of Chelsea's renaissance!",
-    content: "Boss!\n\nHad to write this myself because my agent thinks I've lost my mind! 😂\n\nSo Leeds came in with an absolutely mental offer - £400k a week, captaincy, and they're apparently a 'bigger club' (their words, not mine). My agent nearly fainted when I said no.\n\nBut here's the thing - money isn't everything. When I joined Chelsea, you told me we were going to rebuild this club from the ground up and challenge for everything. Two years later, look where we are! From mid-table to Champions League football, and I've been part of that journey.\n\nLeeds might have history, but WE are making history right now. Plus, and I hope this doesn't sound too cheesy, but you're genuinely the best manager I've worked with. The way you've developed my game, trusted me with responsibility, and created this family atmosphere - that's worth more than any pay rise.\n\nThe lads were joking that Leeds must be desperate to offer that much to steal me from the 'little club' Chelsea. Little do they know we're about to show everyone what this 'little club' can do! \n\nI'm all in, boss. Let's bring some silverware home to Stamford Bridge!\n\nKTBFFH! 💙\nKai\n\nP.S. - The agent is still sulking. Might need to buy him a drink! 🍺",
+    subject: "Leeds United Offer - Staying Put!",
+    preview: "Boss, got that crazy offer from Leeds but no way I'm leaving! You're building something special here.",
+    content: "Boss!\n\nLeeds came in with £400k/week + captaincy. Agent nearly fainted when I said no! 😂\n\nBut honestly? Money isn't everything. We're making history here and I want to be part of it. Plus you're the best gaffer I've worked with.\n\nLet's bring some silverware home!\n\nKTBFFH! 💙\nKai\n\nP.S. - Agent's still sulking lol",
     timestamp: "3 days ago",
-    isRead: false,
+    isRead: true,
     isStarred: true,
     hasAttachments: false
   }
@@ -254,7 +254,7 @@ export function SoccerInbox() {
               {/* Message Content */}
               <div className="flex-1 p-6 overflow-auto">
                 <div className="prose max-w-none">
-                  <p className="text-sm leading-relaxed">{selectedMessage.content}</p>
+                  <div className="text-sm leading-relaxed whitespace-pre-wrap">{selectedMessage.content}</div>
                 </div>
               </div>
 
