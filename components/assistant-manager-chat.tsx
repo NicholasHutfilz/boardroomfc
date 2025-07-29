@@ -189,7 +189,7 @@ export function AssistantManagerChat() {
             <p className="text-sm text-muted-foreground">Your tactical and operational support</p>
           </div>
           <div className="ml-auto">
-            <Badge variant="secondary" className="bg-green-100 text-green-700">
+            <Badge variant="secondary" className="bg-green-500/10 text-green-600 dark:bg-green-500/20 dark:text-green-400">
               Online
             </Badge>
           </div>
@@ -257,22 +257,22 @@ export function AssistantManagerChat() {
         {activeTool && (
           <div className="flex gap-3">
             <Avatar className="h-8 w-8 flex-shrink-0">
-              <AvatarFallback className="bg-blue-500 text-white">
+              <AvatarFallback className="bg-primary text-primary-foreground">
                 {getToolIcon(activeTool)}
               </AvatarFallback>
             </Avatar>
             
             <div className="flex flex-col max-w-[80%] items-start">
-              <div className="rounded-lg p-3 bg-blue-50 border border-blue-200 mr-12 min-w-[300px]">
+              <div className="rounded-lg p-3 bg-muted border border-border mr-12 min-w-[300px]">
                 <div className="flex items-center gap-2 mb-2">
                   {getToolIcon(activeTool)}
-                  <span className="text-sm font-medium text-blue-700">
+                  <span className="text-sm font-medium text-foreground">
                     {activeTool === "scouting-task" ? "Creating Scouting Task" : "Drafting New Tactic"}
                   </span>
                 </div>
-                <p className="text-xs text-blue-600 mb-2">{toolState.description}</p>
+                <p className="text-xs text-muted-foreground mb-2">{toolState.description}</p>
                 <Progress value={toolState.progress} className="h-2" />
-                <div className="text-xs text-blue-500 mt-1">{toolState.progress}% complete</div>
+                <div className="text-xs text-muted-foreground mt-1">{toolState.progress}% complete</div>
               </div>
             </div>
           </div>
