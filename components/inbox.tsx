@@ -45,87 +45,125 @@ interface InboxMessage {
 const mockMessages: InboxMessage[] = [
   {
     id: "1",
-    from: "Manager Analytics",
-    fromEmail: "analytics@boardroomfc.com",
-    avatar: "/placeholder.svg",
-    subject: "Transfer window review - January targets",
-    preview: "Latest scouting reports for January transfer window. Key targets identified in midfield and defense positions.",
-    content: "Our scouting team has compiled comprehensive reports on potential January signings. The analysis shows strong candidates for our midfield reinforcement needs.",
-    timestamp: "Jan 15",
+    from: "Phil Murphy",
+    fromEmail: "p.murphy@scouts.boardroomfc.com",
+    avatar: "/people/philmurphy.png",
+    subject: "🚨 URGENT: Brighton's tactical shift affecting our January strategy",
+    preview: "Brighton have switched to a back-three system due to mounting fixture congestion and player morale concerns. This impacts our scouting targets significantly.",
+    content: `Manager,
+
+    I need to brief you on a significant development that's affecting our January transfer strategy.
+
+    Brighton have just implemented a tactical overhaul - switching from their traditional 4-3-3 to a back-three system. Their AI analysis shows this was triggered by two key factors:
+
+    1. **Fixture Congestion**: With 7 games in 3 weeks, their fitness data indicated players were struggling with the high-pressing demands of their previous system
+    
+    2. **Squad Morale**: Their sentiment analysis picked up growing frustration from defenders about being exposed in 1v1 situations
+    
+    This change has major implications for us:
+    
+    • **Our target RCB (Webster)**: Now playing as the central CB in their new system - they're unlikely to sell their most adaptable defender mid-transition
+    
+    • **Their wing-backs**: Are now crucial to their new identity. Lamptey and Cucurella types will be in even higher demand
+    
+    • **Market shift**: Other clubs are likely analyzing the same data - expect tactical evolution across the league
+    
+    The AI systems are learning from each other faster than ever. What starts as one club's solution quickly becomes league-wide adaptation.
+    
+    Recommend we pivot our scouting focus to clubs still using traditional systems - they'll have players more suited to our tactical needs.
+    
+    Let me know if you want the full tactical breakdown report.
+    
+    Regards,
+    Phil Murphy
+    Chief Scouting Officer`,
+    timestamp: "2 hours ago",
     isRead: false,
     isStarred: true,
     hasAttachments: true,
     attachments: [
-      { name: "transfer_targets.pdf", size: "2.1 MB", type: "pdf" },
-      { name: "budget_analysis.xlsx", size: "891 KB", type: "excel" }
-    ],
-    participants: [
-      { name: "All", avatar: "/placeholder.svg" },
-      { name: "Alex", avatar: "/placeholder.svg" },
-      { name: "Sarah", avatar: "/placeholder.svg" }
+      { name: "brighton_tactical_analysis.pdf", size: "3.4 MB", type: "pdf" },
+      { name: "market_impact_report.xlsx", size: "1.2 MB", type: "excel" }
     ]
   },
   {
     id: "2",
-    from: "Team Performance",
-    fromEmail: "performance@boardroomfc.com", 
-    avatar: "/placeholder.svg",
-    subject: "Weekly training data - Player fitness metrics",
-    preview: "Comprehensive fitness analysis from last week's training sessions. Notable improvements in stamina and speed metrics.",
-    content: "This week's training data shows significant improvements across the squad. Particularly impressive gains in cardiovascular fitness and sprint speeds.",
-    timestamp: "Jan 14",
-    isRead: true,
-    isStarred: false,
-    hasAttachments: true,
-    attachments: [
-      { name: "fitness_report.pdf", size: "1.5 MB", type: "pdf" }
-    ]
-  },
-  {
-    id: "3",
-    from: "Match Analysis",
-    fromEmail: "analysis@boardroomfc.com",
-    avatar: "/placeholder.svg", 
-    subject: "Post-match report: vs Manchester City",
-    preview: "Detailed tactical analysis of yesterday's match. Key areas for improvement identified in defensive transitions.",
-    content: "Yesterday's match provided valuable insights into our tactical setup. While we showed improvement in possession play, defensive transitions need attention.",
-    timestamp: "Jan 13",
+    from: "Marcus Rodriguez",
+    fromEmail: "m.rodriguez@agent.global",
+    avatar: "/people/playerrejectstransfer.png",
+    subject: "Re: Al-Hilal Transfer Offer - DECLINED",
+    preview: "Thank you for the generous offer from Al-Hilal, but I must respectfully decline. This move doesn't align with my personal values and career aspirations.",
+    content: `Dear Manager and Board,
+
+    I hope this message finds you well. I wanted to personally respond to the transfer offer from Al-Hilal that was presented to my representatives yesterday.
+
+    While I am incredibly honored by their interest and the substantial financial package they've offered (€120M transfer fee + €500k/week wages), I must respectfully decline this opportunity.
+
+    This decision comes down to my core values and long-term vision:
+
+    **Personal Values**: I've always been committed to playing in leagues where I can inspire young players from my community. The Premier League's global reach and diverse fanbase aligns with my mission to be a positive role model.
+
+    **Sporting Ambition**: At 26, I'm entering my prime years. I want to test myself against the world's best week in, week out. The Champions League and Premier League provide that consistent elite-level competition that drives me.
+
+    **Career Legacy**: Money isn't everything. I want to be remembered for what I achieved on the pitch, not just my salary. Building something special here at the club means more to me than any paycheck.
+
+    **Family Considerations**: My family has built a life here. My children are settled in school, my wife loves the community we've become part of. Football is my profession, but family comes first.
+
+    I know this might surprise some people - turning down that kind of money. But I've seen too many talented players chase quick riches and lose their edge. That's not the legacy I want to leave.
+
+    I'm committed to giving everything for this club and helping us achieve our ambitious goals. Sometimes the best decision isn't the most profitable one.
+
+    Thank you for understanding my position.
+
+    Best regards,
+    Marcus Rodriguez`,
+    timestamp: "6 hours ago",
     isRead: true,
     isStarred: true,
     hasAttachments: false
   },
   {
-    id: "4",
-    from: "Youth Academy",
-    fromEmail: "academy@boardroomfc.com",
-    avatar: "/placeholder.svg",
-    subject: "Promotion candidates - U21 to first team",
-    preview: "Three academy players showing exceptional development. Recommendation for first team integration.",
-    content: "Our youth development program has produced three standout performers ready for first team consideration. Detailed assessment reports attached.",
-    timestamp: "Jan 12", 
+    id: "3",
+    from: "Kai Sterling",
+    fromEmail: "k.sterling@chelseafc.com",
+    avatar: "/people/starplayer.png",
+    subject: "RE: Leeds United Offer - Thanks, but I'm staying put! 💙",
+    preview: "Boss, Leeds offered 3x my wages and Champions League football, but honestly? I'd rather build something legendary with you here at Chelsea. This is just the beginning!",
+    content: `Boss!
+
+    Hope you're doing well! Had to drop you a quick message about this Leeds situation before the media gets hold of it.
+
+    So... Leeds United came in with an absolutely mental offer yesterday. We're talking:
+    • €200M transfer fee (apparently I'm worth more than Neymar now? 😅)
+    • €800k per week wages (that's nearly 3x what I'm on here)
+    • Guaranteed Champions League football
+    • Captain's armband from day one
+    • Their entire marketing budget built around me
+
+    My agent was practically doing backflips. My accountant called it "generational wealth." Even my mum asked if I'd lost my mind for considering turning it down.
+
+    But here's the thing...
+
+    **You're my favorite manager I've ever worked with.** The way you've developed my game, trusted me in big moments, and actually listened to my ideas about tactics - I've never had that before. Remember when you let me suggest that inverted winger role last season? That changed everything for me.
+
+    **This Chelsea project is just getting started.** We've gone from relegation candidates to European contenders in 18 months. I want to be part of writing that complete story, not jumping ship right when it gets exciting.
+
+    **Leeds might be bigger historically**, but they're living in the past. We're building the future. Plus, have you seen their training ground? Our facilities here are literally 20 years ahead!
+
+    **The team chemistry we've built is special.** You can't buy what we have in the dressing room. Half these lads have become my best mates. Why would I leave that for a bigger paycheck?
+
+    I've already told my agent to politely decline. Leeds can keep their money - I want to lift the Premier League trophy wearing a Chelsea shirt, with you on the touchline celebrating.
+
+    Let's make history together, Boss. This is our time.
+
+    Your loyal star player (and biggest fan),
+    Kai ⭐
+
+    P.S. - The lads are planning a celebration dinner for turning down "stupid money." You're invited! 🍾`,
+    timestamp: "Yesterday",
     isRead: false,
-    isStarred: false,
-    hasAttachments: true,
-    attachments: [
-      { name: "academy_report.pdf", size: "3.2 MB", type: "pdf" },
-      { name: "player_videos.zip", size: "125 MB", type: "zip" }
-    ]
-  },
-  {
-    id: "5",
-    from: "Financial Controller",
-    fromEmail: "finance@boardroomfc.com",
-    avatar: "/placeholder.svg",
-    subject: "Q1 Budget review - Transfer funds allocation",
-    preview: "Quarterly financial review complete. Transfer budget confirmed for remaining season activities.",
-    content: "Financial review shows healthy position for January activities. Full budget breakdown and recommendations provided.",
-    timestamp: "Jan 11",
-    isRead: true,
-    isStarred: false,
-    hasAttachments: true,
-    attachments: [
-      { name: "q1_budget.pdf", size: "1.8 MB", type: "pdf" }
-    ]
+    isStarred: true,
+    hasAttachments: false
   }
 ]
 
