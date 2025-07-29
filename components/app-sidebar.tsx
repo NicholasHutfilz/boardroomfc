@@ -16,6 +16,7 @@ import {
   IconUserSearch,
   IconClipboardList,
   IconMail,
+  IconCoins,
 } from "@tabler/icons-react"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -46,6 +47,11 @@ const data = {
       title: "Squad Management",
       url: "/squad",
       icon: IconUsers,
+    },
+    {
+      title: "Finances",
+      url: "/finances",
+      icon: IconCoins,
     },
     {
       title: "Match Analytics",
