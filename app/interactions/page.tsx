@@ -6,54 +6,112 @@ import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ProtectedRoute } from "@/components/protected-route"
 import { ArrowLeft, Send } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
+
+interface Message {
+  id: number
+  sender: string
+  content: string
+  timestamp: string
+  avatar: string
+}
 
 export default function InteractionsPage() {
   const [message, setMessage] = useState("")
+  const [messages, setMessages] = useState<Message[]>([])
+  const [isThinking, setIsThinking] = useState(false)
+  const [isStreaming, setIsStreaming] = useState(false)
+  const [streamingText, setStreamingText] = useState("")
+  const [messageCounter, setMessageCounter] = useState(0)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
   
-  // Mock conversation data
-  const messages = [
-    {
-      id: 1,
-      sender: "AI",
-      content: "Hello! I'm here to help you with any football management questions you might have. What would you like to discuss?",
-      timestamp: "10:30 AM",
-      avatar: "🤖"
-    },
-    {
-      id: 2,
-      sender: "You",
-      content: "I'm having trouble deciding on my starting lineup for this weekend's match. Can you help me analyze my squad?",
-      timestamp: "10:32 AM",
-      avatar: "👤"
-    },
-    {
-      id: 3,
-      sender: "AI",
-      content: "Absolutely! I'd be happy to help you with your lineup decisions. Let me analyze your current squad and recent player performances. What formation are you considering?",
-      timestamp: "10:32 AM",
-      avatar: "🤖"
-    },
-    {
-      id: 4,
-      sender: "You",
-      content: "I was thinking about switching to a 4-3-3 formation. My striker has been in great form lately.",
-      timestamp: "10:35 AM",
-      avatar: "👤"
-    },
-    {
-      id: 5,
-      sender: "AI",
-      content: "Excellent choice! The 4-3-3 is a versatile formation that can provide good attacking width while maintaining defensive stability. With your striker in form, this formation will give him the support he needs. Let's look at your midfield options to complement this setup.",
-      timestamp: "10:36 AM",
-      avatar: "🤖"
-    }
+  // Predefined Todd Boehly responses for the demo
+  const toddResponses = [
+    "Welcome! I'm Todd Boehly, Chairman of Chelsea FC. Thank you for applying for the Football Manager position. I've been looking forward to this interview. Tell me, what attracted you to Chelsea?",
+    "Excellent! I like what I'm hearing. Now, let's talk tactics. How would you approach managing our current squad? We've made significant investments and I want to see results.",
+    "That's the kind of thinking we need at Stamford Bridge. One more question - how do you handle pressure? The Premier League is unforgiving, and our fans expect nothing but the best.",
+    "Outstanding answers! I'm impressed with your vision and approach. You clearly understand what Chelsea is about. We'll be in touch very soon with our decision. Thank you for your time today."
   ]
 
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      // Handle sending message logic here
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages, streamingText])
+
+  // Initialize with Todd's first message on component mount
+  useEffect(() => {
+    if (messages.length === 0) {
+      setTimeout(() => {
+        simulateToddResponse(0)
+      }, 1000)
+    }
+  }, [])
+
+  const getCurrentTime = () => {
+    const now = new Date()
+    return now.toLocaleString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
+
+  const simulateToddResponse = async (responseIndex: number) => {
+    if (responseIndex >= toddResponses.length) return
+
+    // Show thinking animation
+    setIsThinking(true)
+    await new Promise(resolve => setTimeout(resolve, 1500))
+    setIsThinking(false)
+
+    // Start streaming animation
+    setIsStreaming(true)
+    setStreamingText("")
+    
+    const response = toddResponses[responseIndex]
+    const words = response.split(' ')
+    
+    for (let i = 0; i <= words.length; i++) {
+      const currentText = words.slice(0, i).join(' ')
+      setStreamingText(currentText)
+      await new Promise(resolve => setTimeout(resolve, 80)) // Adjust speed here
+    }
+
+    // Add the complete message to the chat
+    const newMessage = {
+      id: Date.now(),
+      sender: "Todd Boehly",
+      content: response,
+      timestamp: getCurrentTime(),
+      avatar: "/Todd_Boehly.jpg"
+    }
+
+    setMessages(prev => [...prev, newMessage])
+    setIsStreaming(false)
+    setStreamingText("")
+    setMessageCounter(prev => prev + 1)
+  }
+
+  const handleSendMessage = async () => {
+    if (message.trim() && !isThinking && !isStreaming) {
+      // Add user message
+      const userMessage = {
+        id: Date.now(),
+        sender: "You",
+        content: message.trim(),
+        timestamp: getCurrentTime(),
+        avatar: "👤"
+      }
+      
+      setMessages(prev => [...prev, userMessage])
       setMessage("")
+
+      // Wait a moment, then simulate Todd's response
+      setTimeout(() => {
+        simulateToddResponse(messageCounter)
+      }, 800)
     }
   }
 
@@ -91,7 +149,7 @@ export default function InteractionsPage() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <h1 className="text-xl font-semibold text-white">
-              Football Strategy Advisor
+              Job Interview
             </h1>
           </div>
           
@@ -107,13 +165,14 @@ export default function InteractionsPage() {
             <div className="p-4 border-b border-white/10">
               <div className="flex items-center gap-3">
                 <Avatar className="h-10 w-10">
+                  <AvatarImage src="/Todd_Boehly.jpg" alt="Todd Boehly" />
                   <AvatarFallback className="bg-primary text-primary-foreground">
-                    🤖
+                    TB
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 className="font-semibold text-white">AI Assistant</h3>
-                  <p className="text-sm text-white/70">Online</p>
+                  <h3 className="font-semibold text-white">Todd Boehly</h3>
+                  <p className="text-sm text-white/70">Chairman, Chelsea FC</p>
                 </div>
               </div>
             </div>
@@ -126,13 +185,22 @@ export default function InteractionsPage() {
                   className={`flex gap-3 ${msg.sender === 'You' ? 'flex-row-reverse' : ''}`}
                 >
                   <Avatar className="h-8 w-8 flex-shrink-0">
-                    <AvatarFallback className={`text-sm ${
-                      msg.sender === 'You' 
-                        ? 'bg-primary text-primary-foreground' 
-                        : 'bg-secondary text-secondary-foreground'
-                    }`}>
-                      {msg.avatar}
-                    </AvatarFallback>
+                    {msg.sender === 'Todd Boehly' ? (
+                      <>
+                        <AvatarImage src="/Todd_Boehly.jpg" alt="Todd Boehly" />
+                        <AvatarFallback className="bg-primary text-primary-foreground">
+                          TB
+                        </AvatarFallback>
+                      </>
+                    ) : (
+                      <AvatarFallback className={`text-sm ${
+                        msg.sender === 'You' 
+                          ? 'bg-primary text-primary-foreground' 
+                          : 'bg-secondary text-secondary-foreground'
+                      }`}>
+                        {msg.avatar}
+                      </AvatarFallback>
+                    )}
                   </Avatar>
                   
                   <div className={`flex flex-col max-w-[80%] ${
@@ -151,6 +219,54 @@ export default function InteractionsPage() {
                   </div>
                 </div>
               ))}
+
+              {/* Thinking Animation */}
+              {isThinking && (
+                <div className="flex gap-3">
+                  <Avatar className="h-8 w-8 flex-shrink-0">
+                    <AvatarImage src="/Todd_Boehly.jpg" alt="Todd Boehly" />
+                    <AvatarFallback className="bg-primary text-primary-foreground">
+                      TB
+                    </AvatarFallback>
+                  </Avatar>
+                  
+                  <div className="flex flex-col max-w-[80%] items-start">
+                    <div className="rounded-lg p-3 bg-white/20 text-white mr-12">
+                      <div className="flex items-center gap-1">
+                        <span className="text-sm text-white/70">Thinking</span>
+                        <div className="flex gap-1">
+                          <div className="w-1 h-1 bg-white/70 rounded-full animate-bounce" style={{animationDelay: '0ms'}}></div>
+                          <div className="w-1 h-1 bg-white/70 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
+                          <div className="w-1 h-1 bg-white/70 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Streaming Animation */}
+              {isStreaming && streamingText && (
+                <div className="flex gap-3">
+                  <Avatar className="h-8 w-8 flex-shrink-0">
+                    <AvatarImage src="/Todd_Boehly.jpg" alt="Todd Boehly" />
+                    <AvatarFallback className="bg-primary text-primary-foreground">
+                      TB
+                    </AvatarFallback>
+                  </Avatar>
+                  
+                  <div className="flex flex-col max-w-[80%] items-start">
+                    <div className="rounded-lg p-3 bg-white/20 text-white mr-12">
+                      <p className="text-sm">
+                        {streamingText}
+                        <span className="inline-block w-2 h-4 bg-white/70 ml-1 animate-pulse"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Message Input */}
@@ -162,11 +278,13 @@ export default function InteractionsPage() {
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                   className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-white/40"
+                  disabled={isThinking || isStreaming}
                 />
                 <Button 
                   onClick={handleSendMessage}
                   size="icon"
                   className="bg-primary hover:bg-primary/90"
+                  disabled={isThinking || isStreaming || !message.trim()}
                 >
                   <Send className="h-4 w-4" />
                 </Button>
