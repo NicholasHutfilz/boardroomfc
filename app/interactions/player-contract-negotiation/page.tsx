@@ -29,8 +29,11 @@ export default function InteractionsPage() {
   // Predefined responses for the player contract negotiation demo
   const agentResponses = [
     "Good morning! I'm here representing my client regarding his potential contract with your club. He's very interested in joining, but we need to discuss terms that reflect his market value and ambitions. What's your initial offer?",
+  
     "That's a reasonable starting point, but we were hoping for something more competitive. My client has offers from other top clubs. Can we discuss the wage structure and any performance bonuses you might include?",
+  
     "The wages are getting closer to what we had in mind. Now, let's talk about contract length and release clauses. My client wants security but also flexibility for future opportunities. What are your thoughts on a 4-year deal?",
+  
     "Excellent! I think we have the framework for a deal that works for everyone. My client is excited about this opportunity and your ambitions for the club. Let's get the paperwork started!"
   ]
 

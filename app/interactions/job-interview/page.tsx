@@ -30,7 +30,7 @@ export default function InteractionsPage() {
   const toddResponses = [
     "Welcome! I'm Todd Boehly, Chairman of Chelsea FC. Thank you for applying for the Football Manager position. I've been looking forward to this interview. Tell me, what attracted you to Chelsea?",
     "Excellent! I like what I'm hearing. Now, let's talk tactics. How would you approach managing our current squad? We've made significant investments and I want to see results.",
-    "That's the kind of thinking we need at Stamford Bridge. One more question - how do you handle pressure? The Premier League is unforgiving, and our fans expect nothing but the best.",
+    "Sounds a bit expensive, but that's the kind of thinking we need at Stamford Bridge. One more question - how do you handle pressure? The Premier League is unforgiving, and our fans expect nothing but the best.",
     "Outstanding answers! I'm impressed with your vision and approach. You clearly understand what Chelsea is about. We'll be in touch very soon with our decision. Thank you for your time today."
   ]
 
