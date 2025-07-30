@@ -1,7 +1,7 @@
 <table width="100%">
   <tr>
     <td align="left" width="120">
-      <img src="app/favicon.ico" alt="Boardroom FC Logo" width="100" />
+      <img src="/app/favicon.ico" alt="Boardroom FC Logo" width="100" />
     </td>
     <td align="right">
       <h1>Boardroom Football Club</h1>
