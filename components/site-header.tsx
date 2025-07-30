@@ -22,6 +22,10 @@ function getPageTitle(pathname: string): string {
       return "Dashboard"
     case "/inbox":
       return "Inbox"
+    case "/coaching-staff":
+      return "Coaching Staff"
+    case "/finances":
+      return "Finances"
     case "/saves":
       return "Saves"
     case "/create-manager":

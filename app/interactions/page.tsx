@@ -2,61 +2,11 @@
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ProtectedRoute } from "@/components/protected-route"
-import { ArrowLeft, Send } from "lucide-react"
-import { useState } from "react"
+import { ArrowLeft, Users, UserCheck, Play } from "lucide-react"
+import Link from "next/link"
 
 export default function InteractionsPage() {
-  const [message, setMessage] = useState("")
-  
-  // Mock conversation data
-  const messages = [
-    {
-      id: 1,
-      sender: "AI",
-      content: "Hello! I'm here to help you with any football management questions you might have. What would you like to discuss?",
-      timestamp: "10:30 AM",
-      avatar: "🤖"
-    },
-    {
-      id: 2,
-      sender: "You",
-      content: "I'm having trouble deciding on my starting lineup for this weekend's match. Can you help me analyze my squad?",
-      timestamp: "10:32 AM",
-      avatar: "👤"
-    },
-    {
-      id: 3,
-      sender: "AI",
-      content: "Absolutely! I'd be happy to help you with your lineup decisions. Let me analyze your current squad and recent player performances. What formation are you considering?",
-      timestamp: "10:32 AM",
-      avatar: "🤖"
-    },
-    {
-      id: 4,
-      sender: "You",
-      content: "I was thinking about switching to a 4-3-3 formation. My striker has been in great form lately.",
-      timestamp: "10:35 AM",
-      avatar: "👤"
-    },
-    {
-      id: 5,
-      sender: "AI",
-      content: "Excellent choice! The 4-3-3 is a versatile formation that can provide good attacking width while maintaining defensive stability. With your striker in form, this formation will give him the support he needs. Let's look at your midfield options to complement this setup.",
-      timestamp: "10:36 AM",
-      avatar: "🤖"
-    }
-  ]
-
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      // Handle sending message logic here
-      setMessage("")
-    }
-  }
-
   const getCurrentDateTime = () => {
     const now = new Date()
     return now.toLocaleString('en-US', {
@@ -91,7 +41,7 @@ export default function InteractionsPage() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <h1 className="text-xl font-semibold text-white">
-              Football Strategy Advisor
+              Interactions Demo
             </h1>
           </div>
           
@@ -100,79 +50,80 @@ export default function InteractionsPage() {
           </div>
         </div>
 
-        {/* Chat Interface */}
-        <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-80px)] p-4">
-          <Card className="w-full max-w-2xl h-[600px] bg-white/10 backdrop-blur-md border-white/20 flex flex-col">
-            {/* Chat Header */}
-            <div className="p-4 border-b border-white/10">
-              <div className="flex items-center gap-3">
-                <Avatar className="h-10 w-10">
-                  <AvatarFallback className="bg-primary text-primary-foreground">
-                    🤖
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 className="font-semibold text-white">AI Assistant</h3>
-                  <p className="text-sm text-white/70">Online</p>
-                </div>
-              </div>
+        {/* Main Content */}
+        <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-80px)] p-8">
+          <div className="w-full max-w-4xl">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold text-white mb-4">
+                Choose Your Demo
+              </h2>
+              <p className="text-xl text-white/80 max-w-2xl mx-auto">
+                Experience different types of AI-powered conversations in our football management simulation.
+              </p>
             </div>
 
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {messages.map((msg) => (
-                <div 
-                  key={msg.id}
-                  className={`flex gap-3 ${msg.sender === 'You' ? 'flex-row-reverse' : ''}`}
-                >
-                  <Avatar className="h-8 w-8 flex-shrink-0">
-                    <AvatarFallback className={`text-sm ${
-                      msg.sender === 'You' 
-                        ? 'bg-primary text-primary-foreground' 
-                        : 'bg-secondary text-secondary-foreground'
-                    }`}>
-                      {msg.avatar}
-                    </AvatarFallback>
-                  </Avatar>
-                  
-                  <div className={`flex flex-col max-w-[80%] ${
-                    msg.sender === 'You' ? 'items-end' : 'items-start'
-                  }`}>
-                    <div className={`rounded-lg p-3 ${
-                      msg.sender === 'You' 
-                        ? 'bg-primary text-primary-foreground ml-12' 
-                        : 'bg-white/20 text-white mr-12'
-                    }`}>
-                      <p className="text-sm">{msg.content}</p>
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Job Interview Demo */}
+              <Link href="/interactions/job-interview">
+                <Card className="group bg-white/10 backdrop-blur-md border-white/20 p-8 cursor-pointer hover:bg-white/15 transition-all duration-300 h-full">
+                  <div className="flex flex-col items-center text-center space-y-6">
+                    <div className="w-20 h-20 bg-blue-600/20 rounded-full flex items-center justify-center group-hover:bg-blue-600/30 transition-colors">
+                      <UserCheck className="h-10 w-10 text-blue-400" />
                     </div>
-                    <span className="text-xs text-white/60 mt-1 px-1">
-                      {msg.timestamp}
-                    </span>
+                    
+                    <div>
+                      <h3 className="text-2xl font-bold text-white mb-3">
+                        Job Interview
+                      </h3>
+                      <p className="text-white/70 leading-relaxed">
+                        Participate in a realistic job interview with Chelsea FC Chairman Todd Boehly. 
+                        Experience an authentic football manager interview with strategic questions about tactics, 
+                        squad management, and handling pressure.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-blue-400 group-hover:text-blue-300 transition-colors">
+                      <Play className="h-4 w-4" />
+                      <span className="font-medium">Start Interview</span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                </Card>
+              </Link>
+
+              {/* Player Contract Negotiation Demo */}
+              <Link href="/interactions/player-contract-negotiation">
+                <Card className="group bg-white/10 backdrop-blur-md border-white/20 p-8 cursor-pointer hover:bg-white/15 transition-all duration-300 h-full">
+                  <div className="flex flex-col items-center text-center space-y-6">
+                    <div className="w-20 h-20 bg-green-600/20 rounded-full flex items-center justify-center group-hover:bg-green-600/30 transition-colors">
+                      <Users className="h-10 w-10 text-green-400" />
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-2xl font-bold text-white mb-3">
+                        Player Contract Negotiation
+                      </h3>
+                      <p className="text-white/70 leading-relaxed">
+                        Navigate complex contract negotiations with a top player and their agent. 
+                        Discuss wages, contract length, performance bonuses, and other critical terms 
+                        to secure your target signing.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-green-400 group-hover:text-green-300 transition-colors">
+                      <Play className="h-4 w-4" />
+                      <span className="font-medium">Start Negotiation</span>
+                    </div>
+                  </div>
+                </Card>
+              </Link>
             </div>
 
-            {/* Message Input */}
-            <div className="p-4 border-t border-white/10">
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Type your message..."
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-white/40"
-                />
-                <Button 
-                  onClick={handleSendMessage}
-                  size="icon"
-                  className="bg-primary hover:bg-primary/90"
-                >
-                  <Send className="h-4 w-4" />
-                </Button>
-              </div>
+            <div className="text-center mt-12">
+              <p className="text-white/60 text-sm">
+                Both demos feature realistic AI-powered conversations with streaming responses and thinking animations.
+              </p>
             </div>
-          </Card>
+          </div>
         </div>
       </div>
     </ProtectedRoute>
